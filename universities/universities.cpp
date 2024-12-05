@@ -1,3 +1,4 @@
+// поменять кодировку !
 #include <clocale>
 #include <iostream>
 
@@ -22,24 +23,27 @@ int main () {
     };
     const int universities_size = sizeof(universities_children) / sizeof(universities_children[0]);
 
-    hlr::MenuItem universities = {"1 - Посмотреть университеты Санкт-Петербурга", hlr::universities};
+    hlr::MenuItem universities = {"1 - Посмотреть университеты Санкт-Петербурга", hlr::show_menu, universities_children, universities_size};
     hlr::MenuItem exit = {"0 - Я уже студент", hlr::exit};
     
     hlr::MenuItem* main_children[] = { &exit, &universities};
     const int main_size = sizeof(main_children) / sizeof(main_children[0]);
+
+    hlr::MenuItem main = {nullptr, hlr::show_menu, main_children, main_size};
     
+    universities_spbgu.parent = &universities;
+    universities_itmo.parent = &universities;
+    universities_politex.parent = &universities;
+    universities_leti.parent = &universities;
+    universities_go_back.parent = &universities;
+
+    universities.parent = &main;
+    exit.parent = &main;
+
+    const hlr::MenuItem* current = &main;
     int user_input;
     do {
-        std::cout << "Ну здарова, отец" << std::endl;
-        for (int i = 1; i < main_size; i++) {
-        }
-        std::cout << main_children[i]->title << std::endl;
-        std::cout << "Обучайка > ";
-
-        std::cin >> user_input;
-        main_children[user_input]->func();
-
-        std::cout << std::endl;
+        current = current->func(current);
     } while (true);
 
     return 0;
